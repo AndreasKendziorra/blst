@@ -118,7 +118,69 @@ VERIFY_TEST_INPUT = [
         bytes.fromhex(
             "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
         ),
-        
+        False,
+    ],
+]
+
+POP_TEST_INPUT = [
+    bytes.fromhex("47b8192d77bf871b62e87859d653922725724a5c031afeabc60bcef5ff665138"),
+    bytes.fromhex("263dbd792f5b1be47ed85f8938c0f29586af0d3ac7b977f21c278fe1462040e3"),
+]
+
+POP_VERIFY_TEST_INPUT = [
+    # format [pk, proof, expected result]
+    # Invalid case: public key is identity point in G1
+    [
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Invalid case: pk does not represent a point on E1
+    [
+        bytes.fromhex(
+            "a53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Invalid case: pk represents a point on E1 but is NOT an element of G1
+    # from https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve-11#appendix-J.9.1:
+    #   pubkey equals Q1.x of the first example, however the the most
+    #   significant bit is set as described as described here:
+    #       https://github.com/supranational/blst#serialization
+    [
+        bytes.fromhex(
+            "960003aaf1632b13396dbad518effa00fff532f604de1a7fc2082ff4cb0afa2d63b2c32da1bef2bf6c5ca62dc6b72f9c"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Invalid case: proof is not a point in E2 (tampered proof)
+    [
+        bytes.fromhex(
+            "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+        ),
+        bytes.fromhex(
+            "b803eb0ed93ea10224a73b6b9c725796be9f5fefd215ef7a5b97234cc956cf6870db6127b7e4d824ec62276078e787db05584ce1adbf076bc0808ca0f15b73d59060254b25393d95dfc7abe3cda566842aaedf50bbb062aae1bbb6ef3b1fffff"
+        ),
+        False,
+    ],
+    # Invalid case: proof is a point in E2 but not the matching proof for pk
+    [
+        bytes.fromhex(
+            "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+        ),
+        bytes.fromhex(
+            "88bb31b27eae23038e14f9d9d1b628a39f5881b5278c3c6f0249f81ba0deb1f68aa5f8847854d6554051aa810fdf1cdb02df4af7a5647b1aa4afb60ec6d446ee17af24a8a50876ffdaf9bf475038ec5f8ebeda1c1c6a3220293e23b13a9a5d26"
+        ),
         False,
     ],
 ]
@@ -193,10 +255,56 @@ def test_verify():
     return passed
 
 
+def test_pop():
+    passed = True
+    for sk in POP_TEST_INPUT:
+        pk = wrapper.SkToPk(sk)
+        proof = wrapper.PopProve(sk)
+        if not wrapper.PopVerify(pk, proof):
+            passed = False
+            print(
+                "\nFAILED test for proof of possession:\nsk  =",
+                sk.hex(),
+                "\npk =",
+                pk.hex(),
+                "\nproof =",
+                proof.hex(),
+                "\n",
+            )
+        else:
+            print("Test for proof of possession PASSED")
+    return passed
+
+
+def test_pop_verify():
+    passed = True
+    for input in POP_VERIFY_TEST_INPUT:
+        [pk, proof, expected_result] = input
+        result = wrapper.PopVerify(pk, proof)
+        if result != expected_result:
+            passed = False
+            print(
+                "\nFAILED test for PopVerify function:\npk  =",
+                pk.hex(),
+                "\nproof =",
+                proof.hex(),
+                "\nexpected result  =",
+                expected_result,
+                "\nactual result  =",
+                result,
+                "\n",
+            )
+        else:
+            print("Test for PopVerify function PASSED")
+    return passed
+
+
 if __name__ == "__main__":
     passed = test_sign()
     passed = passed and test_SkToPk()
     passed = passed and test_verify()
+    passed = passed and test_pop()
+    passed = passed and test_pop_verify()
 
     if passed:
         print("All tests PASSED")

@@ -2,10 +2,11 @@
 
 import blst
 
-DST = b"BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_"
+DST_SIG = b"BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_"
+DST_POP = b"BLS_POP_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_"
 
 # sk_bytes, msg and dst must be of type bytes
-def sign(sk_bytes, msg, dst=DST):
+def sign(sk_bytes, msg, dst=DST_SIG):
     SK = blst.SecretKey()
     SK.from_bendian(sk_bytes)
     return blst.P2().hash_to(msg, dst).sign_with(SK).compress()
@@ -25,7 +26,7 @@ def SkToPk(sk_bytes):
 # The reason is that all checks are already done during public key registration,
 # i.e., in PopVerify, and signature validation is only done for registered
 # public keys.
-def verify(pk_bytes, msg, sig, dst=DST):
+def verify(pk_bytes, msg, sig, dst=DST_SIG):
     try:
         SIG = blst.P2_Affine(sig)
     except:
@@ -36,3 +37,31 @@ def verify(pk_bytes, msg, sig, dst=DST):
         return SIG.core_verify(PK, True, msg, dst) == blst.BLST_SUCCESS
     except:
         return False
+
+
+# sk_bytes must be of type bytes
+def PopProve(sk_bytes):
+    PK = SkToPk(sk_bytes)
+    return sign(sk_bytes, PK, DST_POP)
+
+
+def KeyValidate(pk_bytes):
+    try:
+        PK = blst.P1_Affine(pk_bytes)
+    except:
+        # pk_bytes does not represent a point on E1
+        return False
+    if not PK.in_group():
+        # PK is not in group G1
+        return False
+    if PK.is_inf():
+        # PK is the identity point in G1
+        return False
+    return True
+
+
+# pk_bytes and proof must be of type bytes
+def PopVerify(pk_bytes, proof):
+    if not KeyValidate(pk_bytes):
+        return False
+    return verify(pk_bytes, pk_bytes, proof, DST_POP)
