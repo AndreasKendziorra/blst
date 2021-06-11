@@ -44,6 +44,85 @@ SK_TO_PK_TEST_INPUT = [
     ]
 ]
 
+VERIFY_TEST_INPUT = [
+    # format [pk, message, signature, expected result]
+    # valid case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_valid_case_195246ee3bd3b6ec/data.yaml
+    [
+        bytes.fromhex(
+            "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
+        ),
+        True,
+    ],
+    # valid case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_valid_case_2ea479adf8c40300/data.yaml
+    [
+        bytes.fromhex(
+            "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+        ),
+        bytes.fromhex(
+            "5656565656565656565656565656565656565656565656565656565656565656"
+        ),
+        bytes.fromhex(
+            "882730e5d03f6b42c3abc26d3372625034e1d871b65a8a6b900a56dae22da98abbe1b68f85e49fe7652a55ec3d0591c20767677e33e5cbb1207315c41a9ac03be39c2e7668edc043d6cb1d9fd93033caa8a1c5b0e84bedaeb6c64972503a43eb"
+        ),
+        True,
+    ],
+    # tampered signature case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_tampered_signature_case_195246ee3bd3b6ec/data.yaml
+    [
+        bytes.fromhex(
+            "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9ffffffff"
+        ),
+        False,
+    ],
+    # tampered message case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_valid_case_195246ee3bd3b6ec/data.yaml
+    # but modified message
+    [
+        bytes.fromhex(
+            "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+        ),
+        bytes.fromhex(
+            "bbababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
+        ),
+        False,
+    ],
+    # wrong pubkey case: pubkey is valid with respect to KeyValidate (see
+    # https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-bls-signature#section-2.5),
+    # but not the right key for the provided signature
+    # message and signature from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_valid_case_195246ee3bd3b6ec/data.yaml
+    # pubkey from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_valid_case_2ea479adf8c40300/data.yaml
+    [
+        bytes.fromhex(
+            "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
+        ),
+        
+        False,
+    ],
+]
+
 
 def test_sign():
     passed = True
@@ -89,9 +168,35 @@ def test_SkToPk():
     return passed
 
 
+def test_verify():
+    passed = True
+    for input in VERIFY_TEST_INPUT:
+        [pk, msg, sig, expected_result] = input
+        result = wrapper.verify(pk, msg, sig)
+        if result != expected_result:
+            passed = False
+            print(
+                "\nFAILED test for verify function:\npk  =",
+                pk.hex(),
+                "\nmsg =",
+                msg.hex(),
+                "\nsig =",
+                sig.hex(),
+                "\nexpected result  =",
+                expected_result,
+                "\nactual result  =",
+                result,
+                "\n",
+            )
+        else:
+            print("Test for verify function PASSED")
+    return passed
+
+
 if __name__ == "__main__":
     passed = test_sign()
     passed = passed and test_SkToPk()
+    passed = passed and test_verify()
 
     if passed:
         print("All tests PASSED")
