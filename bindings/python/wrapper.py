@@ -86,3 +86,23 @@ def Aggregate(sigs):
             return INVALID_AGG_SIG
         agg_sig.add(SIG)
     return [True, agg_sig.compress()]
+
+
+def FastAggregateVerify(pks, msg, sig):
+    if len(pks) == 0:
+        return False
+    try:
+        SIG = blst.P2_Affine(sig)
+    except:
+        # sig is not a point on E2
+        return False
+    agg_pk = blst.P1(pks[0])
+    for pk in pks[1:]:
+        PK = blst.P1_Affine(pk)
+        agg_pk.add(PK)
+    try:
+        return (
+            SIG.core_verify(agg_pk.to_affine(), True, msg, DST_SIG) == blst.BLST_SUCCESS
+        )
+    except:
+        return False

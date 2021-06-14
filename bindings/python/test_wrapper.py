@@ -304,6 +304,214 @@ AGGREGATE_TEST_INPUT = [
     ],
 ]
 
+FAST_AGGREGATE_VERIFY_TEST_INPUT = [
+    # format [[pk_1, ..., pk_n], msg, sig, expected result]
+    # Valid case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_valid_3d7576f3c0e3570a/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+        ],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "9712c3edd73a209c742b8250759db12549b3eaf43b5ca61376d9f30e2747dbcf842d8b2ac0901d2a093713e20284a7670fcf6954e9ab93de991bb9b313e664785a075fc285806fa5224c82bde146561b446ccfc706a64b8579513cfc4ff1d930"
+        ),
+        True,
+    ],
+    # Valid case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_valid_5e745ad0c6199a6c/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+        ],
+        bytes.fromhex(
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "b6ed936746e01f8ecf281f020953fbf1f01debd5657c4a383940b020b26507f6076334f91e2366c96e9ab279fb5158090352ea1c5b0c9274504f4f0e7053af24802e51e4568d164fe986834f41e55c8e850ce1f98458c0cfc9ab380b55285a55"
+        ),
+        True,
+    ],
+    # Valid case
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_valid_3d7576f3c0e3570a/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+        ],
+        bytes.fromhex(
+            "5656565656565656565656565656565656565656565656565656565656565656"
+        ),
+        bytes.fromhex(
+            "912c3615f69575407db9392eb21fee18fff797eeb2fbe1816366ca2a08ae574d8824dbfafb4c9eaa1cf61b63c6f9b69911f269b664c42947dd1b53ef1081926c1e82bb2a465f927124b08391a5249036146d6f3f1e17ff5f162f779746d830d1"
+        ),
+        True,
+    ],
+    # Inalid case: extra public key
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_extra_pubkey_4f079f946446fabf/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+        ],
+        bytes.fromhex(
+            "5656565656565656565656565656565656565656565656565656565656565656"
+        ),
+        bytes.fromhex(
+            "912c3615f69575407db9392eb21fee18fff797eeb2fbe1816366ca2a08ae574d8824dbfafb4c9eaa1cf61b63c6f9b69911f269b664c42947dd1b53ef1081926c1e82bb2a465f927124b08391a5249036146d6f3f1e17ff5f162f779746d830d1"
+        ),
+        False,
+    ],
+    # Inalid case: extra public key
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_extra_pubkey_5a38e6b4017fe4dd/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+        ],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "9712c3edd73a209c742b8250759db12549b3eaf43b5ca61376d9f30e2747dbcf842d8b2ac0901d2a093713e20284a7670fcf6954e9ab93de991bb9b313e664785a075fc285806fa5224c82bde146561b446ccfc706a64b8579513cfc4ff1d930"
+        ),
+        False,
+    ],
+    # Inalid case: extra public key
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_extra_pubkey_a698ea45b109f303/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+        ],
+        bytes.fromhex(
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "b6ed936746e01f8ecf281f020953fbf1f01debd5657c4a383940b020b26507f6076334f91e2366c96e9ab279fb5158090352ea1c5b0c9274504f4f0e7053af24802e51e4568d164fe986834f41e55c8e850ce1f98458c0cfc9ab380b55285a55"
+        ),
+        False,
+    ],
+    # Inalid case: no public keys and signature is identity point
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_na_pubkeys_and_infinity_signature/data.yaml
+    [
+        [],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Inalid case: no public keys and signature is byte sequence with all bytes set to zero
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_na_pubkeys_and_infinity_signature/data.yaml
+    [
+        [],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Inalid case: tampered signature
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_tampered_signature_3d7576f3c0e3570a/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+            bytes.fromhex(
+                "b53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+            ),
+        ],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "9712c3edd73a209c742b8250759db12549b3eaf43b5ca61376d9f30e2747dbcf842d8b2ac0901d2a093713e20284a7670fcf6954e9ab93de991bb9b313e664785a075fc285806fa5224c82bde146561b446ccfc706a64b8579513cfcffffffff"
+        ),
+        False,
+    ],
+    # Inalid case: tampered signature
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_tampered_signature_5e745ad0c6199a6c/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+        ],
+        bytes.fromhex(
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "b6ed936746e01f8ecf281f020953fbf1f01debd5657c4a383940b020b26507f6076334f91e2366c96e9ab279fb5158090352ea1c5b0c9274504f4f0e7053af24802e51e4568d164fe986834f41e55c8e850ce1f98458c0cfc9ab380bffffffff"
+        ),
+        False,
+    ],
+    # Inalid case: tampered signature
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/fast_aggregate_verify/small/fast_aggregate_verify_tampered_signature_652ce62f09290811/data.yaml
+    [
+        [
+            bytes.fromhex(
+                "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
+            ),
+            bytes.fromhex(
+                "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+            ),
+        ],
+        bytes.fromhex(
+            "5656565656565656565656565656565656565656565656565656565656565656"
+        ),
+        bytes.fromhex(
+            "912c3615f69575407db9392eb21fee18fff797eeb2fbe1816366ca2a08ae574d8824dbfafb4c9eaa1cf61b63c6f9b69911f269b664c42947dd1b53ef1081926c1e82bb2a465f927124b08391a5249036146d6f3f1e17ff5f162f7797ffffffff"
+        ),
+        False,
+    ],
+]
+
 
 def test_sign():
     passed = True
@@ -445,6 +653,33 @@ def test_aggregate():
     return passed
 
 
+def test_fast_aggregate_verify():
+    passed = True
+    for input in FAST_AGGREGATE_VERIFY_TEST_INPUT:
+        [pks, msg, sig, expected_result] = input
+        result = wrapper.FastAggregateVerify(pks, msg, sig)
+        if result != expected_result:
+            passed = False
+            print(
+                "\nFAILED test for FastAggregateVerify function:\nlen(pks)  =",
+                len(pks),
+                "\npks =",
+                [pk.hex() for pk in pks],
+                "\nmsg =",
+                msg.hex(),
+                "\nsig =",
+                sig.hex(),
+                "\nexpected result  =",
+                expected_result,
+                "\nactual result  =",
+                result,
+                "\n",
+            )
+        else:
+            print("Test for Aggregate function PASSED")
+    return passed
+
+
 if __name__ == "__main__":
     passed = test_sign()
     passed = passed and test_SkToPk()
@@ -452,6 +687,7 @@ if __name__ == "__main__":
     passed = passed and test_pop()
     passed = passed and test_pop_verify()
     passed = passed and test_aggregate()
+    passed = passed and test_fast_aggregate_verify()
 
     if passed:
         print("All tests PASSED")
