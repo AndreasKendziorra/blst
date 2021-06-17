@@ -41,7 +41,23 @@ SK_TO_PK_TEST_INPUT = [
         bytes.fromhex(
             "a491d1b0ecd9bb917989f0e74f0dea0422eac4a873e5e2644f368dffb9a6e20fd6e10c1b77654d067c0618f6e5a7f79a"
         ),
-    ]
+    ],
+    [
+        bytes.fromhex(
+            "4dcffb43f4730ddb9364ef30a6b9b3e0343582e5df6bcd315f201cb3234adae3"
+        ),
+        bytes.fromhex(
+            "a6b6a639f7fa0b64ad3a93be965e9cc34e1d9d0f0427c14c38fc80934a937c5fa745a3cb285f64d4d1c06d0825504488"
+        ),
+    ],
+    [
+        bytes.fromhex(
+            "18a4b157ca6d83fe3081bbf6a63edbacf543a1c2a4b0befe68f912597f2c71c1"
+        ),
+        bytes.fromhex(
+            "884b52f84e801d2453edb023928c79125a5e4384c108dd8f17b7f2a20772c7dc4b9635602937df1b87d8b7284870c932"
+        ),
+    ],
 ]
 
 VERIFY_TEST_INPUT = [
