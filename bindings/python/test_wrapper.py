@@ -58,6 +58,14 @@ SK_TO_PK_TEST_INPUT = [
             "884b52f84e801d2453edb023928c79125a5e4384c108dd8f17b7f2a20772c7dc4b9635602937df1b87d8b7284870c932"
         ),
     ],
+    [
+        bytes.fromhex(
+            "47b8192d77bf871b62e87859d653922725724a5c031afeabc60bcef5ff665138"
+        ),
+        bytes.fromhex(
+            "b301803f8b5ac4a1133581fc676dfedc60d891dd5fa99028805e5ea5b08d3491af75d0707adab3b70c6a6a580217bf81"
+        ),
+    ],
 ]
 
 VERIFY_TEST_INPUT = [
