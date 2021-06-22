@@ -151,6 +151,22 @@ POP_TEST_INPUT = [
     bytes.fromhex("263dbd792f5b1be47ed85f8938c0f29586af0d3ac7b977f21c278fe1462040e3"),
 ]
 
+POP_PROVE_TEST_INPUT = [
+    # format [sk, expected proof]
+    # from https://github.com/Chia-Network/bls-signatures/blob/6aca6349bd6c8ed369672307885df33cdcd124f9/src/test.cpp#L420
+    #   note, however, that an outdated version of KeyGen was used to compute
+    #   the secret key from the seed
+    #   0x0404040404040404040404040404040404040404040404040404040404040404
+    [
+        bytes.fromhex(
+            "258787ef728c898e43bc76244d70f468c9c7e1338a107b18b42da0d86b663c26"
+        ),
+        bytes.fromhex(
+            "84f709159435f0dc73b3e8bf6c78d85282d19231555a8ee3b6e2573aaf66872d9203fefa1ef700e34e7c3f3fb28210100558c6871c53f1ef6055b9f06b0d1abe22ad584ad3b957f3018a8f58227c6c716b1e15791459850f2289168fa0cf9115"
+        ),
+    ]
+]
+
 POP_VERIFY_TEST_INPUT = [
     # format [pk, proof, expected result]
     # Invalid case: public key is identity point in G1
@@ -627,6 +643,27 @@ def test_pop():
     return passed
 
 
+def test_pop_prove():
+    passed = True
+    for input in POP_PROVE_TEST_INPUT:
+        [sk, expected_proof] = input
+        proof = wrapper.PopProve(sk)
+        if not proof == expected_proof:
+            passed = False
+            print(
+                "\nFAILED test for PopProve:\nsk  =",
+                sk.hex(),
+                "\nexpected proof =",
+                expected_proof.hex(),
+                "\nactual proof   =",
+                proof.hex(),
+                "\n",
+            )
+        else:
+            print("Test for PopProve PASSED")
+    return passed
+
+
 def test_pop_verify():
     passed = True
     for input in POP_VERIFY_TEST_INPUT:
@@ -709,6 +746,7 @@ if __name__ == "__main__":
     passed = passed and test_SkToPk()
     passed = passed and test_verify()
     passed = passed and test_pop()
+    passed = passed and test_pop_prove()
     passed = passed and test_pop_verify()
     passed = passed and test_aggregate()
     passed = passed and test_fast_aggregate_verify()
