@@ -27,9 +27,10 @@ def verify(pk_bytes, msg, sig, dst=DST_SIG):
     except:
         # sig is not a point on E2
         return False
-    if not KeyValidate(pk_bytes):
+    try:
+        PK = blst.P1_Affine(pk_bytes)
+    except:
         return False
-    PK = blst.P1_Affine(pk_bytes)
     try:
         return SIG.core_verify(PK, True, msg, dst) == blst.BLST_SUCCESS
     except:
