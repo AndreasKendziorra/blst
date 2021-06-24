@@ -28,6 +28,18 @@ SIGN_TEST_INPUT = [
             "af1390c3c47acdb37131a51216da683c509fce0e954328a59f93aebda7e4ff974ba208d9a4a2a2389f892a9d418d618418dd7f7a6bc7aa0da999a9d3a5b815bc085e14fd001f6a1948768a3f4afefc8b8240dda329f984cb345c6363272ba4fe"
         ),
     ],
+    # signing with zero secret key (should not fail as oppossed to the eth2 spec tests)
+    [
+        bytes.fromhex(
+            "0000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+    ],
 ]
 
 SK_TO_PK_TEST_INPUT = [
