@@ -398,6 +398,28 @@ AGGREGATE_TEST_INPUT = [
             bytes(),
         ],
     ],
+    # Valid case: aggregating signatures for the two secret keys sk1=1 and sk2=r-1
+    # Hence, their aggregate signature must be the identity element in G2.
+    # The aggregate public for the two public keys is also the identity element in G1.
+    # msg = 0xabababababababababababababababababababababababababababababababab
+    # sk1 = 0x0000000000000000000000000000000000000000000000000000000000000001
+    # sk2 = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000000
+    [
+        [
+            bytes.fromhex(
+                "979451d90ade914f7a6ffc5062914af990af297abdebf81dcebcaff93a5cb959e7f5db624bc8abb8cdb2660374c86a350bc0f071f2d0655a5edbf6b9208a6649d3309b8692d2f55bde74c52cc2de0fed2bb60b4c45935b11c32827da1b80cb8f"
+            ),
+            bytes.fromhex(
+                "b79451d90ade914f7a6ffc5062914af990af297abdebf81dcebcaff93a5cb959e7f5db624bc8abb8cdb2660374c86a350bc0f071f2d0655a5edbf6b9208a6649d3309b8692d2f55bde74c52cc2de0fed2bb60b4c45935b11c32827da1b80cb8f"
+            ),
+        ],
+        [
+            True,
+            bytes.fromhex(
+                "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+            ),
+        ],
+    ],
 ]
 
 FAST_AGGREGATE_VERIFY_TEST_INPUT = [
@@ -603,6 +625,26 @@ FAST_AGGREGATE_VERIFY_TEST_INPUT = [
         ),
         bytes.fromhex(
             "912c3615f69575407db9392eb21fee18fff797eeb2fbe1816366ca2a08ae574d8824dbfafb4c9eaa1cf61b63c6f9b69911f269b664c42947dd1b53ef1081926c1e82bb2a465f927124b08391a5249036146d6f3f1e17ff5f162f7797ffffffff"
+        ),
+        False,
+    ],
+    # Inalid case: individual pub keys are valid, but the aggregate public key is the identity element in G1
+    # pk1 is public key for sk=1, pk2 is the public key for sk=r-1, where
+    # r = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+    [
+        [
+            bytes.fromhex(
+                "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+            ),
+            bytes.fromhex(
+                "b7f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+            ),
+        ],
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
         ),
         False,
     ],
