@@ -156,6 +156,50 @@ VERIFY_TEST_INPUT = [
         ),
         False,
     ],
+    # Invalid case: public key is identity point
+    # from https://media.githubusercontent.com/media/ethereum/eth2.0-spec-tests/master/tests/general/phase0/bls/verify/small/verify_infinity_pubkey_and_infinity_signature/data.yaml
+    [
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        bytes.fromhex(
+            "1212121212121212121212121212121212121212121212121212121212121212"
+        ),
+        bytes.fromhex(
+            "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        ),
+        False,
+    ],
+    # Invalid case: pk does not represent a point on curve E1
+    [
+        bytes.fromhex(
+            "a53d21a4cfd562c469cc81514d4ce5a6b577d8403d32a394dc265dd190b47fa9f829fdd7963afdf972e5e77854051f6f"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
+        ),
+        False,
+    ],
+    # Invalid case: pk represents a point on E1 but is NOT an element of G1
+    # from https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve-11#appendix-J.9.1:
+    #   pubkey equals Q1.x of the first example, however the the most
+    #   significant bit is set as described as described here:
+    #       https://github.com/supranational/blst#serialization
+    [
+        bytes.fromhex(
+            "960003aaf1632b13396dbad518effa00fff532f604de1a7fc2082ff4cb0afa2d63b2c32da1bef2bf6c5ca62dc6b72f9c"
+        ),
+        bytes.fromhex(
+            "abababababababababababababababababababababababababababababababab"
+        ),
+        bytes.fromhex(
+            "ae82747ddeefe4fd64cf9cedb9b04ae3e8a43420cd255e3c7cd06a8d88b7c7f8638543719981c5d16fa3527c468c25f0026704a6951bde891360c7e8d12ddee0559004ccdbe6046b55bae1b257ee97f7cdb955773d7cf29adf3ccbb9975e4eb9"
+        ),
+        False,
+    ],
 ]
 
 POP_TEST_INPUT = [
